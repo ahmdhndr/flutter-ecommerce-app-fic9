@@ -20,6 +20,8 @@ class AuthRemoteDatasource {
 
     if (response.statusCode == 200) {
       return right(AuthResponseModel.fromJson(response.body));
+    } else if (response.statusCode == 400) {
+      return left('Invalid username/password');
     } else {
       return left('Server Error');
     }
@@ -31,6 +33,10 @@ class AuthRemoteDatasource {
       'Content-Type': 'application/json',
     };
 
+    if (data.identifier == '' || data.password == '') {
+      return left('Email/password tidak boleh kosong');
+    }
+
     final response = await http.post(
       Uri.parse('${Variables.baseUrl}/api/auth/local'),
       headers: headers,
@@ -39,6 +45,8 @@ class AuthRemoteDatasource {
 
     if (response.statusCode == 200) {
       return right(AuthResponseModel.fromJson(response.body));
+    } else if (response.statusCode == 400) {
+      return left('Invalid username/password');
     } else {
       return left('Server Error');
     }
